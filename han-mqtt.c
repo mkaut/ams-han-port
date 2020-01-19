@@ -37,8 +37,6 @@ int sendMqttMessage(
 		 struct mosquitto * mosq, /* the MQTT sender */
 		 char *root)              /* MQTT root topic to send to */
 {
-	// TODO: check connection, reconnect if needed!
-
 	/* compact JSON formatting for sending */
 	JsonFormat compactJson;
 	strcpy(compactJson.indent, "");
@@ -53,7 +51,7 @@ int sendMqttMessage(
 		false, /* convert values to standard units */
 		tm_str
 	);
-	assert(msgLen == strlen(mqttMsg) && "checking message length");
+	assert(msgLen == (int) strlen(mqttMsg) && "checking message length");
 
 	int hanList = list_number(msg);
 
@@ -61,8 +59,15 @@ int sendMqttMessage(
 	sprintf(topic, "%s/list_%d", root, hanList);
 
 	int qos = 0;
-	mosquitto_publish(mosq, NULL, topic, msgLen, mqttMsg, qos, false);
+	int res = mosquitto_publish(mosq, NULL, topic, msgLen, mqttMsg, qos, false);
+	if (res == MOSQ_ERR_NO_CONN) {
+		// we got disconnected - try to reconnect
+		int rc = mosquitto_reconnect(mosq);
+		if (rc == MOSQ_ERR_SUCCESS) {
+			// connected -> try sending again
+			res = mosquitto_publish(mosq, NULL, topic, msgLen, mqttMsg, qos, false);
+		}
+	}
 
-	// TODO: does mosquitto_publish return something we could return?
-	return msgLen;
+	return res;
 }

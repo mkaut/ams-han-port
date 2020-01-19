@@ -54,11 +54,16 @@ int main()
 	/***************************
 	 * data for MQTT connection
 	 * *************************/
-	char mqttServerAddress[] = "openhabianpi.local";
+	// TODO: input this either via command-line or a config file (json parsed with json-c?)
+	#ifndef MQTT_SERVER
+		char mqttServerAddress[] = "localhost";
+	#else
+		char mqttServerAddress[] = MQTT_SERVER;
+	#endif
 	int mqttServerPort = 1883;
 	char mqttRootTopic[] = "ams-han";
 
-	
+
 	HanMsg msg;
 	struct mosquitto * mosq;
 	unsigned char buf[4096];
@@ -136,8 +141,21 @@ int main()
 			printMessage(buf, buf_len, &msg, tm_str, NULL);
 		}
 
-		if (debug) printf("posting to MQTT\n");
-		sendMqttMessage(&msg, tm_str, mosq, mqttRootTopic);
+		if (debug) printf("publishing to MQTT .. ");
+		int res = sendMqttMessage(&msg, tm_str, mosq, mqttRootTopic);
+		if (res == MOSQ_ERR_SUCCESS) {
+			printf("OK\n");
+		}
+		else {
+			switch(res) {
+				case MOSQ_ERR_NO_CONN:
+					printf("FAILED: no connection to the broker\n");
+					break;
+				default:
+					printf("FAILED with error code %d", res);
+			}
+		}
+		printf("\n");
 		fflush(stdout);
 	}
 

@@ -625,8 +625,6 @@ int printMessage(unsigned char *buf,
     break;
   }
 
-  printf("\n");
-
   return 0;
 }
 

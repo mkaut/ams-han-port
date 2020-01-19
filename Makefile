@@ -8,6 +8,9 @@ LIBS=-lm
 
 all: $(PROGS)
 
+han2mqtt: han2mqtt.c han-mqtt.c han-reader.c rs232.c aes.c
+	gcc -o han2mqtt -D SERIAL_PORT='"/dev/ttyUSB0"' -D MQTT_SERVER='"openhabianpi.local"' $(CFLAGS) han2mqtt.c han-mqtt.c han-reader.c rs232.c aes.c -lmosquitto $(LIBS)
+
 test_rx: read.c rs232.c fcs.c
 	gcc -o test_rx -D SERIAL_PORT='"/dev/ttyUSB0"' $(CFLAGS) read.c rs232.c fcs.c aes.c $(LIBS)
 
