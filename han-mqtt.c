@@ -60,7 +60,7 @@ int sendMqttMessage(
 
 	int qos = 0;
 	int res = mosquitto_publish(mosq, NULL, topic, msgLen, mqttMsg, qos, false);
-	if (res == MOSQ_ERR_NO_CONN) {
+	if (res == MOSQ_ERR_NO_CONN || res == MOSQ_ERR_ERRNO) {
 		// we got disconnected - try to reconnect
 		int rc = mosquitto_reconnect(mosq);
 		if (rc == MOSQ_ERR_SUCCESS) {
