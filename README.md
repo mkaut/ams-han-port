@@ -4,6 +4,9 @@ Read HAN port on Norwegian AMS Smart Meters
 This is a fork of https://github.com/per-erik-nordbo/ams-han-port, with added MQTT functionality.
 It is in a very early stage, but the MQTT sending works. Tested on a Raspberry Pi.
 
+I cannot promise any development, as long as it works for me and nobody else asks for anything.
+
+
 ## Main changes to the parent project:
 
 ### New files

@@ -1,4 +1,4 @@
-PROGS=test_rx gen-fcs conv hex aes-test tst tst2 tst3 sender receiver tm tm2 tm3 sizeof
+PROGS=test_rx gen-fcs aes-test tst tst2 tst3 sender receiver tm tm2 tm3
 CFLAGS=-Wall -Wextra -O2
 LIBS=-lm
 
@@ -32,12 +32,6 @@ tst2: tst2.c
 tst3: tst3.c rs232.c
 	gcc -o tst3 $(CFLAGS) tst3.c rs232.c
 
-conv: conv.c
-	gcc -o conv $(CFLAGS) conv.c
-
-hex: hex.c
-	gcc -o hex $(CFLAGS) hex.c
-
 aes-test: aes-test.c aes.c
 	gcc -o aes-test $(CFLAGS) aes-test.c aes.c
 
@@ -50,9 +44,6 @@ tm2: tm2.c
 
 tm3: tm3.c
 	gcc -o tm3 $(CFLAGS) tm3.c $(LIBS)
-
-sizeof: sizeof.c
-	gcc -o sizeof $(CFLAGS) sizeof.c
 
 clean:
 	rm -f *.o $(PROGS) *.exe
